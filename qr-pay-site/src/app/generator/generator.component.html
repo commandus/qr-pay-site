@@ -1,0 +1,16 @@
+<div>
+	<ng-container *ngIf="settings.qrdata.length>0">
+		{{settings.qrdata}}
+		<div>
+			<a href="/#/qr-scan/">Сканировать другой QR код</a>
+		</div>
+	</ng-container>
+	<ng-container *ngIf="settings.qrdata.length==0">
+		<div>
+			Здесь может быть ваш QR код
+		</div>
+		<div>
+			<a href="/#/qr-scan/">Сканировать QR код</a>
+		</div>
+	</ng-container>
+</div>
