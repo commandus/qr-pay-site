@@ -1,16 +1,24 @@
-<div>
-	<ng-container *ngIf="settings.qrdata.length>0">
-		{{settings.qrdata}}
-		<div>
-			<a href="/#/qr-scan/">Сканировать другой QR код</a>
-		</div>
-	</ng-container>
-	<ng-container *ngIf="settings.qrdata.length==0">
-		<div>
-			Здесь может быть ваш QR код
-		</div>
-		<div>
-			<a href="/#/qr-scan/">Сканировать QR код</a>
-		</div>
-	</ng-container>
-</div>
+<div fxLayout="row wrap" fxLayoutAlign="center center">
+	<div fxFlex="100">
+		<canvas class="qr" id="canvas" #canvas></canvas>
+	</div>
+	<div fxFlex="100" fxLayoutAlign="space-around center">
+		<ng-container *ngIf="settings.qrdata.length>0">
+			<form #orderForm="ngForm" [formGroup]="formGroup" (ngSubmit)="updateSum()">
+				<mat-form-field>
+					<mat-label>Сумма, руб.</mat-label>
+					<input matInput type="number" placeholder="Сумма, руб." formControlName="sum" autofocus>
+				</mat-form-field>
+				<button color="primary" mat-button type="submit"><mat-icon>done</mat-icon></button>
+			</form>
+			<div>
+				<a href="/#/qr-scan/">Сканировать другой QR код</a>
+			</div>
+		</ng-container>
+		<ng-container *ngIf="settings.qrdata.length==0">
+			<div>
+				<a href="/#/qr-scan/">Сканировать QR код</a>
+			</div>
+		</ng-container>
+	</div>
+  </div>

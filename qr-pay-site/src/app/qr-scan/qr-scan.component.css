@@ -11,3 +11,11 @@
 #canvas {
     width: 100%;
 }
+
+form, div, button {
+    margin: 0.5em;
+}
+  
+mat-form-field {
+    width: 100%;
+}

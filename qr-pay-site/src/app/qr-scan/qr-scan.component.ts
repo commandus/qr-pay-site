@@ -1,8 +1,10 @@
 import { SettingsService } from './../settings.service';
 import { Component, ViewChild, ElementRef, OnInit, OnDestroy } from '@angular/core';
 
-import jsQR, { QRCode } from 'jsqr';
+import jsQR from 'jsqr';
 import { Router } from '@angular/router';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { QrSbp } from './../model/qrsbp';
 
 @Component({
   selector: 'app-qr-scan',
@@ -13,6 +15,8 @@ export class QrScanComponent implements OnInit, OnDestroy {
   @ViewChild('video', { static: true }) videoElement!: ElementRef;
   @ViewChild('canvas', { static: true }) canvasElement!: ElementRef;
 
+  public formGroup: FormGroup;
+
   successMessage = '';
   errorMessage = '';
 
@@ -21,9 +25,14 @@ export class QrScanComponent implements OnInit, OnDestroy {
   
   constructor(
     private router: Router,
-    private settingsService: SettingsService
+    private formBuilder: FormBuilder,
+    private settings: SettingsService
   ) {
-
+    this.formGroup = this.formBuilder.group({
+      url: [this.settings.qrdata,
+        [ Validators.required ]
+      ]
+    });
   }
   
   ngOnInit(): void {
@@ -75,6 +84,18 @@ export class QrScanComponent implements OnInit, OnDestroy {
     }
   }
 
+  public setUrl(): void {
+    const v = this.formGroup.getRawValue().url;
+    if (!QrSbp.isValid(v)) {
+      this.errorMessage = 'непоходящий URL QR кода';
+      return;
+    }
+    this.errorMessage = '';
+    this.settings.qrdata = v;
+    this.settings.save();
+    this.router.navigateByUrl('/');
+  }
+
   public cancel(): void {
     this.stopStream();
     this.router.navigateByUrl('/');
@@ -93,11 +114,15 @@ export class QrScanComponent implements OnInit, OnDestroy {
     const code = jsQR(imageData.data, imageData.width, imageData.height, { inversionAttempts: "dontInvert" })
 
     if (code) {
-      this.settingsService.qrdata = code.data;
-      this.router.navigateByUrl('/');
-    } else {
-      setTimeout(() => { this.checkImage(); }, 100)
+      const validCode = QrSbp.isValid(code.data);
+      if (validCode) {
+        this.settings.qrdata = code.data;
+        this.settings.save();
+        this.router.navigateByUrl('/');
+      }
     }
+    this.errorMessage = 'непоходящий URL QR кода';
+    setTimeout(() => { this.checkImage(); }, 100)
   }
 
 }

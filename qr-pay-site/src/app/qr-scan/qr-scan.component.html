@@ -1,27 +1,38 @@
 <div fxLayout="row wrap" fxLayoutAlign="center center">
-	<div class="card" fxFlex="85">
-	  <mat-card>
-			<mat-card-content>
-				<div fxLayout="row wrap">
-					<!-- Video -->
-					<div class="video-row" fxFlex="100">
-						<video class="video" id="video" #video autoplay playsinline></video>
-					</div>
-					<!-- Canvas -->
-					<div fxFlex="100" style="display:none">
-						<canvas class="video" id="canvas" #canvas></canvas>
-					</div>
-					<div fxFlex="100" fxLayoutAlign="space-around center">
-						<div>
-							{{errorMessage}}{{successMessage}}
-						</div>
-						<button mat-button (click)="setStreamFromDevice(v.deviceId)" *ngFor="let v of devices; let i = index">{{i}}</button>
-						<div>
-							<button mat-button (click)="cancel()">Отмена</button>
-						</div>
-					</div>
-				</div>
-			</mat-card-content>
-	  </mat-card>
+	<ng-container *ngIf="devices.length==0">
+		<div>
+			Не обнаружена ни одна видеокамера.
+		</div>
+		<div>
+			Введите URL cтатической QR метки вручную.
+		</div>
+		<form #orderForm="ngForm" [formGroup]="formGroup" (ngSubmit)="setUrl()">
+			<mat-form-field>
+				<mat-label>URL</mat-label>
+				<input matInput type="url" placeholder="http://..." formControlName="url" autofocus>
+			</mat-form-field>
+			<button color="primary" mat-button type="submit">Сохранить</button>
+		</form>
+	</ng-container>
+
+	
+	<div class="video-row" fxFlex="100">
+		<video class="video" id="video" #video autoplay playsinline></video>
 	</div>
+	<div fxFlex="100" style="display:none">
+		<canvas class="video" id="canvas" #canvas></canvas>
+	</div>
+
+	{{errorMessage}}{{successMessage}}
+
+	<ng-container *ngIf="devices.length>0">
+		<div fxFlex="100" fxLayoutAlign="space-around center">
+			<div>Камеры</div>
+			<button mat-button (click)="setStreamFromDevice(v.deviceId)" *ngFor="let v of devices; let i = index">{{i}}</button>
+		</div>
+	</ng-container>
+	<div>
+		<button mat-button (click)="cancel()">Отмена</button>
+	</div>
+
   </div>

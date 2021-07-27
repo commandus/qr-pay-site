@@ -1,3 +1,14 @@
 div {
 	padding-left: 8pt;
 }
+.qr {
+    width: 100%;
+    object-fit: cover;
+}
+#canvas {
+    width: 100%;
+}
+
+form, div, button {
+    margin: 0.5em;
+}
